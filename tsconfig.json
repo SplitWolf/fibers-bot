@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "outDir": "dist",
+        "module": "commonjs",
+        "strictFunctionTypes": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "allowJs": true,
+        "downlevelIteration": true
+    },
+    "include": [
+        "src/**/*.ts"
+, "client.ts"    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
