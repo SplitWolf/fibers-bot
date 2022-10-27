@@ -1,5 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction } from "discord.js";
+import { Client, CommandInteraction, InteractionResponse, SlashCommandBuilder } from "discord.js";
 import { Command } from "./base";
 
 
@@ -8,9 +7,7 @@ export class ping extends Command {
         const data = new SlashCommandBuilder().setName('ping').setDescription('Replies with pong and response time.')
         super(data)
     }
-    execute(interaction: CommandInteraction): Promise<void> {
-        return interaction.reply(`Pong! \`${Math.abs(
-            Date.now() - new Date(interaction.createdAt).getTime()
-        )}ms\``);
+    execute(client: Client, interaction: CommandInteraction): Promise<InteractionResponse<boolean>> {
+        return interaction.reply(`Pong! \`${new Date(interaction.createdAt).getTime() -  Date.now()}ms\``);
     }
 }
