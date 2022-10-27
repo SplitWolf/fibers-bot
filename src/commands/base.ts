@@ -1,12 +1,11 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { PermissionResolvable, CommandInteraction, Permissions } from "discord.js";
+import { PermissionResolvable, CommandInteraction, Client, SlashCommandBuilder, InteractionResponse, PermissionsBitField } from "discord.js";
 
 // Command Base Class
 export abstract class Command {
-  data: SlashCommandBuilder
+  data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> //SlashCommanderBuilderTypes
   userPermissions?: PermissionResolvable[]
 
-  constructor(data: SlashCommandBuilder, userPermissions?: PermissionResolvable[]) {
+  constructor(data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">, userPermissions?: PermissionResolvable[]) {
     this.data = data;
     this.userPermissions = userPermissions ? userPermissions : null;
   }
@@ -18,7 +17,7 @@ export abstract class Command {
   hasPermission(interaction: CommandInteraction): boolean {
     if (this.userPermissions != null) {
       const hasPerms = (interaction.member
-        .permissions as Permissions).has(this.userPermissions) 
+        .permissions as PermissionsBitField).has(this.userPermissions) 
       if (hasPerms) {
         return true;
       }
@@ -30,10 +29,12 @@ export abstract class Command {
   /**
    * What to do when command is called.
    *
+   * @param client the client for the bot
    * @param interaction the Command Interaction Event
    */
 
   abstract execute(
+    client: Client,
     interaction: CommandInteraction
-  ): Promise<void>;
+  ): Promise<InteractionResponse<boolean>>;
 }

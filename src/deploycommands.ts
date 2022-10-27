@@ -1,4 +1,4 @@
-import * as REST from "@discordjs/rest";
+import { REST } from "discord.js";
 import { Routes } from "discord-api-types/v9";
 import * as glob from "glob";
 import { Command } from "./commands/base";
@@ -7,13 +7,14 @@ const commands: Object[] | any = [];
 
 let toDelete = new Map<String, { commandId: string; guildId?: string }>();
 let commandFiles: string[];
+const excludes: string[] = ["base", "track", "queue", "subscription"];
 
 glob(__dirname + "/commands/**/*", async (err, res) => {
   if (err) {
     console.log(err);
   } else {
     commandFiles = res.filter((file) => file.endsWith(".ts"));
-    commandFiles = commandFiles.filter((file) => !file.includes("base"));
+    commandFiles = commandFiles.filter((file) => !excludes.some((exclude) => file.includes(exclude)));
 	for (let index = 0; index < commandFiles.length; index++) {
 		const cmdImp = await import(commandFiles[index]);
 		if (Object.keys(cmdImp).length !== 0) {
@@ -26,7 +27,7 @@ glob(__dirname + "/commands/**/*", async (err, res) => {
   }
 });
 
-const rest = new REST.REST({ version: "9" }).setToken(process.env.BOT_TOKEN);
+const rest = new REST({ version: "9" }).setToken(process.env.BOT_TOKEN);
 
 async function commandsToAPI(guildId: string) {
   try {

@@ -1,20 +1,23 @@
-import * as fs from 'fs'
-import { Client, Intents, Interaction, Permissions, Collection } from 'discord.js';
+import { Client, GatewayIntentBits, Partials, Interaction, Collection, ActivityType } from 'discord.js';
 import * as glob from 'glob';
 import { Command } from './commands/base';
 require('dotenv').config();
 
+//TODO: FIX DISCORD.JS VOICE IMPELEMENTATION
+
+
 // Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [GatewayIntentBits.GuildMessages, GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 const commands = new Collection<String, Command>();
 let commandFiles: string[];
+const excludes: string[] = ["base", "track", "queue", "subscription"];
 
 glob(__dirname + "/commands/**/*", (err, res) => {
 	if (err) {
 		console.log(err)
 	} else {
 		commandFiles = res.filter(file => file.endsWith('.ts'));
-		commandFiles = commandFiles.filter(file => !file.includes('base'));
+		commandFiles = commandFiles.filter((file) => !excludes.some((exclude) => file.includes(exclude)));
 		(async () => {
 			for (const file of commandFiles) {
 				const cmdImp = await import(file)
@@ -34,7 +37,7 @@ client.once('ready', () => {
 	console.log(
 		`Logged in as ${client.user.username}#${client.user.discriminator} running version 2.0.0`
 	);
-	client.user.setActivity({ name: "/help", type: "LISTENING" });
+	client.user.setActivity({ name: "/help", type: ActivityType.Listening });
 	console.log(`${client.user.username} is on ${client.guilds.cache.size} server(s)!`);
 	console.log("-----------------------------------------------------------");
 });
@@ -47,7 +50,7 @@ client.on("interactionCreate", async (interaction: Interaction) => {
 	if (!command) return;
 
 	try {
-		await command.execute(interaction);
+		await command.execute(client, interaction);
 	} catch (error) {
 		console.error(error);
 		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
