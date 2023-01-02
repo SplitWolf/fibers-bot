@@ -10,7 +10,8 @@ require('dotenv').config();
 const client = new Client({ intents: [GatewayIntentBits.GuildMessages, GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 const commands = new Collection<String, Command>();
 let commandFiles: string[];
-const excludes: string[] = ["base", "track", "queue", "subscription"];
+// Files to exculde from the command search because they are not commands
+const excludes: string[] = ["base", "track", "subscription"];
 
 glob(__dirname + "/commands/**/*", (err, res) => {
 	if (err) {
