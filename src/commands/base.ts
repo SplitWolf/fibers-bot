@@ -1,10 +1,18 @@
 import { PermissionResolvable, CommandInteraction, Client, SlashCommandBuilder, InteractionResponse, PermissionsBitField } from "discord.js";
 
 // Command Base Class
+/**
+ * Base class for all the bot's commands
+ */
 export abstract class Command {
   data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> //SlashCommanderBuilderTypes
   userPermissions?: PermissionResolvable[]
 
+  /**
+   * 
+   * @param data The slash command builder for the command implementing this class.
+   * @param userPermissions Permissions needed to use the command.
+   */
   constructor(data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">, userPermissions?: PermissionResolvable[]) {
     this.data = data;
     this.userPermissions = userPermissions ? userPermissions : null;
