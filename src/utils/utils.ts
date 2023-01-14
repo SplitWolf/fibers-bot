@@ -5,7 +5,7 @@ import { MusicSubscription } from "./music/subscription";
 export class Utils {
   constructor() {}
 
-  public static subscriptions: Map<Snowflake, MusicSubscription>;
+  public static subscriptions: Map<Snowflake, MusicSubscription> = new Map<Snowflake, MusicSubscription>();
   
 
   public static noUndef(...args: any[]) {
