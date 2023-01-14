@@ -25,7 +25,9 @@ export class play extends Command {
 
 	async execute(client: Client<boolean>, interaction: CommandInteraction<CacheType>): Promise<InteractionResponse<boolean>> {
 		// Get the guild's already active subscription if it exists.
+		//TODO: Fix bug where cannot create new connection after destruction
 		let subscription = Utils.subscriptions.get(interaction.guildId)
+
 		// Defer the reply till later.
 		await interaction.deferReply();
 		// Get the song url or name
@@ -60,6 +62,7 @@ export class play extends Command {
 			return;
 		}
 
+
 		// Procces request, creating track
 		try {
 			const track = await Track.from(url, {
@@ -80,5 +83,6 @@ export class play extends Command {
 			console.warn(error)
 			await interaction.followUp('Failed to play track, please try again later!')
 		}
+		//console.log(Utils.subscriptions)
 	}
 }
