@@ -13,7 +13,9 @@ import { Track } from "../../utils/music/track"
 
 export class queue extends Command {
     constructor() {
-        const data = new SlashCommandBuilder().setName('queue').setDescription('Gets the music queue for the server.')
+        const data = new SlashCommandBuilder()
+        .setName('queue')
+        .setDescription('Gets the music queue for the server.')
         super(data)
     }
     execute(client: Client<boolean>, interaction: CommandInteraction<CacheType>): Promise<InteractionResponse<boolean>> {
