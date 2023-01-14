@@ -11,7 +11,7 @@ const client = new Client({ intents: [GatewayIntentBits.GuildMessages, GatewayIn
 const commands = new Collection<String, Command>();
 let commandFiles: string[];
 // Files to exculde from the command search because they are not commands
-const excludes: string[] = ["base", "track", "subscription"];
+const excludes: string[] = ["base"];
 
 glob(__dirname + "/commands/**/*", (err, res) => {
 	if (err) {
@@ -36,7 +36,7 @@ client.once('ready', () => {
 
 	console.log("-----------------------------------------------------------");
 	console.log(
-		`Logged in as ${client.user.username}#${client.user.discriminator} running version 2.0.0`
+		`Logged in as ${client.user.username}#${client.user.discriminator} running version 2.1.0`
 	);
 	client.user.setActivity({ name: "/help", type: ActivityType.Listening });
 	console.log(`${client.user.username} is on ${client.guilds.cache.size} server(s)!`);
