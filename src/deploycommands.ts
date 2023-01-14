@@ -7,7 +7,7 @@ const commands: Object[] | any = [];
 
 let toDelete = new Map<String, { commandId: string; guildId?: string }>();
 let commandFiles: string[];
-const excludes: string[] = ["base", "track", "queue", "subscription"];
+const excludes: string[] = ["base"];
 
 glob(__dirname + "/commands/**/*", async (err, res) => {
   if (err) {
