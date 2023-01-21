@@ -14,9 +14,9 @@ export class leave extends Command {
         if (subscription) {
             subscription.stop()
             //TODO: Fix connection destruction no re-creation bug
-
+            Utils.subscriptions.delete(interaction.guildId)
             subscription.voiceConnection.disconnect()
-            subscription.voiceConnection.destroy()
+            subscription.voiceConnection.destroy()  
             return interaction.reply({ content: `Stopped!`, ephemeral: true });
         } else {
             return interaction.reply('Not playing in this server!');
