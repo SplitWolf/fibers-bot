@@ -42,7 +42,7 @@ export class play extends Command {
 					channelId: channel.id,
 					guildId: channel.guildId,
 					adapterCreator: channel.guild.voiceAdapterCreator,
-				}))
+				}),interaction.guildId)
 				subscription.voiceConnection.on('error', console.warn)
 				Utils.subscriptions.set(interaction.guildId, subscription)
 			}
@@ -57,6 +57,12 @@ export class play extends Command {
 		try {
 			await entersState(subscription.voiceConnection, VoiceConnectionStatus.Ready, 20e3)
 		} catch (error) {
+			if(error.code == 'ABORT_ERR') {
+				console.log('ABORT ERR')
+				return;
+				// Send followup to try again in a few seconds, likely didn't have time to disconnect due to recovery time. 
+				// And thus subscription has not been cleaned up and deleted
+			}
 			console.warn(error);
 			await interaction.followUp('Failed to join a voice channel wihtihn 20 seconds, please try again later!')
 			return;
@@ -68,6 +74,7 @@ export class play extends Command {
 			const track = await Track.from(url, {
 				onStart() {
 					interaction.followUp({ content: 'Now playing!', ephemeral: true }).catch(console.warn);
+					interaction.channel.send('Now playing' + track.title)
 				},
 				onFinish() {
 					interaction.followUp({ content: 'Now finished!', ephemeral: true }).catch(console.warn);
