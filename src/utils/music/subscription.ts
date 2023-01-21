@@ -10,6 +10,8 @@ import {
 } from '@discordjs/voice';
 import { Track } from './track';
 import { promisify } from 'util';
+import { Utils } from '../utils';
+import { Snowflake } from 'discord.js';
 
 const wait = promisify(setTimeout);
 
@@ -20,14 +22,16 @@ const wait = promisify(setTimeout);
 export class MusicSubscription {
 	public readonly voiceConnection: VoiceConnection;
 	public readonly audioPlayer: AudioPlayer;
+	private guildId: Snowflake;
 	public queue: Track[];
-	public queueLock = false;
-	public readyLock = false;
+	private queueLock = false;
+	private readyLock = false;
 
-	public constructor(voiceConnection: VoiceConnection) {
+	public constructor(voiceConnection: VoiceConnection, guildId: Snowflake) {
 		this.voiceConnection = voiceConnection;
 		this.audioPlayer = createAudioPlayer();
 		this.queue = [];
+		this.guildId = guildId;
 
 		this.voiceConnection.on('stateChange', async (_, newState) => {
 			if (newState.status === VoiceConnectionStatus.Disconnected) {
@@ -44,6 +48,7 @@ export class MusicSubscription {
 						// Probably moved voice channel
 					} catch {
 						this.voiceConnection.destroy();
+						Utils.subscriptions.delete(this.guildId);
 						// Probably removed from voice channel
 					}
 				} else if (this.voiceConnection.rejoinAttempts < 5) {
@@ -57,6 +62,7 @@ export class MusicSubscription {
 						The disconnect in this case may be recoverable, but we have no more remaining attempts - destroy.
 					*/
 					this.voiceConnection.destroy();
+					Utils.subscriptions.delete(this.guildId);
 				}
 			} else if (newState.status === VoiceConnectionStatus.Destroyed) {
 				/*
@@ -76,7 +82,10 @@ export class MusicSubscription {
 				try {
 					await entersState(this.voiceConnection, VoiceConnectionStatus.Ready, 20_000);
 				} catch {
-					if (this.voiceConnection.state.status !== VoiceConnectionStatus.Destroyed) this.voiceConnection.destroy();
+					if (this.voiceConnection.state.status !== VoiceConnectionStatus.Destroyed) {
+						this.voiceConnection.destroy(); 
+						Utils.subscriptions.delete(this.guildId);
+					}
 				} finally {
 					this.readyLock = false;
 				}
