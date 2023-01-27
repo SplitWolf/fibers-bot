@@ -23,7 +23,7 @@ export class MojangApi {
 							console.log('Error parsing JSON!');
 						}
                     } else {
-						console.log('Status (HypApi):', res.statusCode);
+						console.log('Status (MjpApi):', res.statusCode);
 					}
                 })
             })

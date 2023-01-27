@@ -24,7 +24,7 @@ export class HypixelApi {
 							console.log('Error parsing JSON!');
 						}
 					} else {
-						console.log('Status (MjApi):', res.statusCode);
+						console.log('Status (HypApi):', res.statusCode);
 					}
 				});
 			})
