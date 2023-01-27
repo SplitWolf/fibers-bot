@@ -49,9 +49,14 @@ client.on("interactionCreate", async (interaction: Interaction) => {
 	const command = commands.get(interaction.commandName);
 
 	if (!command) return;
-
+//Add permission check before running command.
 	try {
-		await command.execute(client, interaction);
+		if(command.hasPermission(interaction)) {
+			await command.execute(client, interaction);
+		} else {
+			//TODO: Fix implementation to decode permission string
+			interaction.reply(`You do not have the permissions: ${command.userPermissions} to run this command!`);
+		}
 	} catch (error) {
 		console.error(error);
 		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
