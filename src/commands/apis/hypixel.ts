@@ -23,7 +23,7 @@ export class hypixel extends Command {
         const hpApi = new HypixelApi
         const ign = interaction.options.get('username')!.value! as string
         const logo = new AttachmentBuilder(
-            '../utils/Hypixel.jpg',
+            './src/utils/Hypixel.jpg',
             {name: 'hypixel.jpg'}
         );
         let embed = null
