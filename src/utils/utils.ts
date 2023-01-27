@@ -18,7 +18,7 @@ export class Utils {
     return final;
   }
 
-  public static getRank(data: any) {
+  public static getRank(data: any): String {
     if(data.player.monthlyPackageRank === undefined) {
       if (data.player.newPackageRank === undefined) {
         return 'Default';
@@ -28,7 +28,7 @@ export class Utils {
     return this.translateRank(data.player.monthlyPackageRank);
   }
 
-  private static translateRank(key: String) {
+  private static translateRank(key: String): String {
     switch(key) {
       case 'VIP':
         return 'VIP';
