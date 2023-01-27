@@ -11,6 +11,7 @@ import { Track } from "../../utils/music/track"
 import { Utils } from "../../utils/utils"
 
 export class play extends Command {
+	abortRetry: Boolean = false;
 	constructor() {
 		const data = new SlashCommandBuilder()
 		.setName('play')
@@ -29,7 +30,11 @@ export class play extends Command {
 		let subscription = Utils.subscriptions.get(interaction.guildId)
 
 		// Defer the reply till later.
-		await interaction.deferReply();
+		if(!this.abortRetry) {
+			await interaction.deferReply();
+		} else {
+			this.abortRetry = false;
+		}
 		// Get the song url or name
 		// TODO: Implement check for Strings
 		const url = interaction.options.get('song')!.value! as string
@@ -59,6 +64,9 @@ export class play extends Command {
 		} catch (error) {
 			if(error.code == 'ABORT_ERR') {
 				console.log('ABORT ERR')
+				this.abortRetry = true;
+				this.execute(client,interaction);
+				//interaction.followUp('Try again in a few seconds, connection was not cleaned up!')
 				return;
 				// Send followup to try again in a few seconds, likely didn't have time to disconnect due to recovery time. 
 				// And thus subscription has not been cleaned up and deleted
