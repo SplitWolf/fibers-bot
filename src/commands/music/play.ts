@@ -80,9 +80,10 @@ export class play extends Command {
 		// Procces request, creating track
 		try {
 			const track = await Track.from(url, {
+				// Check this to see why noop is not working, and Change this behavoir so it is less intrustive.
 				onStart() {
 					interaction.followUp({ content: 'Now playing!', ephemeral: true }).catch(console.warn);
-					interaction.channel.send('Now playing' + track.title)
+					interaction.channel.send(`Now playing **${track.title}**`)
 				},
 				onFinish() {
 					interaction.followUp({ content: 'Now finished!', ephemeral: true }).catch(console.warn);
