@@ -1,11 +1,11 @@
-import { PermissionResolvable, CommandInteraction, Client, SlashCommandBuilder, InteractionResponse, PermissionsBitField } from "discord.js";
+import { PermissionResolvable, CommandInteraction, Client, SlashCommandBuilder, InteractionResponse, PermissionsBitField, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
 
 // Command Base Class
 /**
  * Base class for all the bot's commands
  */
 export abstract class Command {
-  data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> //SlashCommanderBuilderTypes
+  data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | Omit<SlashCommandBuilder, "addBooleanOption" | "addUserOption" | "addChannelOption" | "addRoleOption" | "addAttachmentOption" | "addMentionableOption" | "addStringOption" | "addIntegerOption" | "addNumberOption"> //SlashCommanderBuilderTypes
   userPermissions?: PermissionResolvable[]
 
   /**
@@ -13,7 +13,7 @@ export abstract class Command {
    * @param data The slash command builder for the command implementing this class.
    * @param userPermissions Permissions needed to use the command.
    */
-  constructor(data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">, userPermissions?: PermissionResolvable[]) {
+  constructor(data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | Omit<SlashCommandBuilder, "addBooleanOption" | "addUserOption" | "addChannelOption" | "addRoleOption" | "addAttachmentOption" | "addMentionableOption" | "addStringOption" | "addIntegerOption" | "addNumberOption">, userPermissions?: PermissionResolvable[]) {
     this.data = data;
     this.userPermissions = userPermissions ? userPermissions : null;
   }
@@ -45,4 +45,8 @@ export abstract class Command {
     client: Client,
     interaction: CommandInteraction
   ): Promise<InteractionResponse<boolean>>;
+}
+
+export abstract class Subcommand {
+  public static data: SlashCommandSubcommandBuilder | SlashCommandSubcommandGroupBuilder
 }
