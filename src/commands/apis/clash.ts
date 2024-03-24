@@ -50,10 +50,8 @@ export class clash extends Command {
         players.forEach(player => {
             opgg += player + "%2C"
         });
-        console.log(opgg);
         opgg = opgg.replaceAll(" ", '%20');
         opgg = opgg.replaceAll("#", '%23');
-        console.log(opgg);
 
 
         let fields: APIEmbedField[] = [];
