@@ -2,6 +2,7 @@
 .vscode
 # Ignore a Extras Folder
 extras
+dist
 # Logs
 logs
 *.log
