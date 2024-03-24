@@ -15,6 +15,7 @@ export class kick extends Command {
     }
     execute(client: Client, interaction: CommandInteraction): Promise<InteractionResponse<boolean>> | null {
         if(!interaction.isChatInputCommand) return null;
+        //TODO: Check bot permissions
         const interactionCmd = interaction as ChatInputCommandInteraction;
         //@ts-ignore
         const user: User = interactionCmd.options.getUser('target');
