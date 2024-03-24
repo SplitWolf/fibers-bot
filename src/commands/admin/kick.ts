@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Client, CommandInteraction, InteractionResponse, SlashCommandBuilder, User } from "discord.js";
+import { ChatInputCommandInteraction, Client, CommandInteraction, InteractionResponse, PermissionFlagsBits, SlashCommandBuilder, User } from "discord.js";
 import { Command } from "../base";
 
 
@@ -9,18 +9,20 @@ export class kick extends Command {
         .setDescription('Kicks the user from the server.')
         .addUserOption(option => option.setName('target').setDescription('The user to kick').setRequired(true))
         .addStringOption(option => option.setName('reason').setDescription('The reason the user was kicked'))
-        super(data)
+        super(data, [
+            PermissionFlagsBits.KickMembers
+        ])
     }
-    execute(client: Client, interaction: CommandInteraction): Promise<InteractionResponse<boolean>> {
-        if(!interaction.isChatInputCommand) return;
+    execute(client: Client, interaction: CommandInteraction): Promise<InteractionResponse<boolean>> | null {
+        if(!interaction.isChatInputCommand) return null;
         const interactionCmd = interaction as ChatInputCommandInteraction;
         //@ts-ignore
         const user: User = interactionCmd.options.getUser('target');
-        const reason = interactionCmd.options.get('reason').toString();
+        const reason = interactionCmd.options.get('reason')?.toString();
         if(reason != '') {
-            interactionCmd.guild.members.kick(user);
+            interactionCmd.guild?.members.kick(user);
         } else {
-            interactionCmd.guild.members.kick(user, reason);
+            interactionCmd.guild?.members.kick(user, reason);
         }
         return interactionCmd.reply({content: `${user.username} has been kicked.`, ephemeral: true});
     }
