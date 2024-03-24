@@ -1,12 +1,19 @@
 {
     "compilerOptions": {
         "outDir": "dist",
-        "module": "commonjs",
+        "target": "ES2022",
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "esModuleInterop": true,
+        "strict": true,
         "strictFunctionTypes": true,
         "noImplicitAny": true,
         "removeComments": true,
-        "allowJs": true,
-        "downlevelIteration": true
+        "downlevelIteration": true,
+        "declaration": false,
+        "skipDefaultLibCheck": true,
+        "strictNullChecks": true,
+        "resolveJsonModule": true
     },
     "include": [
         "src/**/*.ts"
