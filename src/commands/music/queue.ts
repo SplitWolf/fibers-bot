@@ -19,7 +19,7 @@ export class queue extends Command {
         super(data)
     }
     execute(client: Client<boolean>, interaction: CommandInteraction<CacheType>): Promise<InteractionResponse<boolean>> {
-        let subscription = Utils.subscriptions.get(interaction.guildId)
+        let subscription = Utils.subscriptions.get(interaction.guildId!)
         if (subscription) {
             const current =
                 subscription.audioPlayer.state.status === AudioPlayerStatus.Idle

@@ -40,6 +40,8 @@ export class Utils {
         return 'MVP+';
       case 'SUPERSTAR':
         return 'MVP++';
+      default:
+        return '';
     }
   }
 

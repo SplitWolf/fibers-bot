@@ -10,11 +10,11 @@ export class leave extends Command {
         super(data)
     }
     execute(client: Client<boolean>, interaction: CommandInteraction<CacheType>): Promise<InteractionResponse<boolean>> {
-        let subscription = Utils.subscriptions.get(interaction.guildId)
+        let subscription = Utils.subscriptions.get(interaction.guildId!)
         if (subscription) {
             subscription.stop()
             //TODO: Fix connection destruction no re-creation bug
-            Utils.subscriptions.delete(interaction.guildId)
+            Utils.subscriptions.delete(interaction.guildId!)
             subscription.voiceConnection.disconnect()
             subscription.voiceConnection.destroy()  
             return interaction.reply({ content: `Stopped!`, ephemeral: true });

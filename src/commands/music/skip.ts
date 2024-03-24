@@ -12,7 +12,7 @@ export class skip extends Command {
         super(data)
     }
     execute(client: Client<boolean>, interaction: CommandInteraction<CacheType>): Promise<InteractionResponse<boolean>> {
-        let subscription = Utils.subscriptions.get(interaction.guildId)
+        let subscription = Utils.subscriptions.get(interaction.guildId!)
         if (subscription) {
             subscription.audioPlayer.stop();
             return interaction.reply({ content: `Skipped!`, ephemeral: true });
