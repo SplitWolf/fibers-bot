@@ -20,21 +20,24 @@ export class project extends Command {
             .addStringOption(option => option.setName('project_name').setDescription('The name of the project').setRequired(true))
         )
 
-        super(data)
+        super(data, [
+            PermissionFlagsBits.ManageChannels,
+            PermissionFlagsBits.ManageRoles,
+        ])
     }
-    async execute(client: Client, interaction: CommandInteraction): Promise<InteractionResponse<boolean>> {
-        if(!interaction.isChatInputCommand) return;
+    async execute(client: Client, interaction: CommandInteraction): Promise<InteractionResponse<boolean> | null> {
+        if(!interaction.isChatInputCommand) return null;
         const interactionCmd = interaction as ChatInputCommandInteraction;
         //@ts-ignore
         switch(interactionCmd.options.getSubcommand()) {
             case 'create':
-                this.createChannels(interactionCmd);
-                break;
+                return this.createChannels(interactionCmd);
             case 'remove':
-                this.deleteChannels(interactionCmd);
-                break;
+                return this.deleteChannels(interactionCmd);
+            default:
+                // Should never be reached
+                return null;
         }
-        
        //interaction.deferReply();
     }
     //TODO: Permission checks
@@ -42,9 +45,9 @@ export class project extends Command {
 
 
     async createChannels(interaction: ChatInputCommandInteraction) {
-        const name = interaction.options.getString('project_name');
+        const name = interaction.options.getString('project_name')!;
         const role = interaction.options.getRole('project_role');
-        const guild = interaction.guild;
+        const guild = interaction.guild!;
     
         
         if(role == undefined) {
@@ -61,7 +64,7 @@ export class project extends Command {
             this.buildChannels(guild,name,role as Role);
         }
         
-        interaction.reply({content: `Setting up channels for project: ${name}`, ephemeral: true});
+       return interaction.reply({content: `Setting up channels for project: ${name}`, ephemeral: true});
     }
     
 
@@ -150,33 +153,37 @@ export class project extends Command {
 
     async deleteChannels(interaction: ChatInputCommandInteraction) {
         const name = interaction.options.getString('project_name');
-        const guild = interaction.guild;
+        const guild = interaction.guild!;
 
         guild.roles.fetch().then(roles => {
             let role = roles.find(role => role.name == name)
             if(role != undefined) {
                 role.delete();
+            } else {
+                //TODO: Fix wording
+                interaction.channel!.send({ content: 'Custom role was used manually deletion required if wanted.'})
             }
         })
 
         guild.channels.fetch().then(channels => {
-            let namedChannels = channels.filter(channel =>  channel.name == name);
+            let namedChannels = channels.filter(channel =>  channel!.name == name);
                 //console.log(channel.name + ": " + channel.id + "\nName: " + name + "\nDebug info: " + (channel.name == name));
+                
             let category: CategoryChannel;
             namedChannels.forEach(channel => {
-                if(channel.type == ChannelType.GuildCategory) {
-                    category = channel;
+                if(channel!.type == ChannelType.GuildCategory) {
+                    category = channel!;
                 }
             });
-            if(category != undefined) {
-                let toDelete = channels.filter(channel => channel.parentId == category.id)
-                toDelete.forEach(channel => channel.delete());
+            if(category! != undefined) {
+                let toDelete = channels.filter(channel => channel!.parentId == category.id)
+                toDelete.forEach(channel => channel!.delete());
                 category.delete();
             }
             
         })
 
-        interaction.reply({content: `Removed project: ${name}`, ephemeral: true});
+        return interaction.reply({content: `Removed project: ${name}`, ephemeral: true});
     }
 }
 
