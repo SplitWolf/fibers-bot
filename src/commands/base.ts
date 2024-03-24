@@ -15,7 +15,7 @@ export abstract class Command {
    */
   constructor(data: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | Omit<SlashCommandBuilder, "addBooleanOption" | "addUserOption" | "addChannelOption" | "addRoleOption" | "addAttachmentOption" | "addMentionableOption" | "addStringOption" | "addIntegerOption" | "addNumberOption">, userPermissions?: PermissionResolvable[]) {
     this.data = data;
-    this.userPermissions = userPermissions ? userPermissions : null;
+    this.userPermissions = userPermissions ? userPermissions : undefined;
   }
 
   /**
@@ -24,7 +24,7 @@ export abstract class Command {
    */
   hasPermission(interaction: CommandInteraction): boolean {
     if (this.userPermissions != null) {
-      const hasPerms = (interaction.member
+      const hasPerms = (interaction.member!
         .permissions as PermissionsBitField).has(this.userPermissions) 
       if (hasPerms) {
         return true;
@@ -44,7 +44,7 @@ export abstract class Command {
   abstract execute(
     client: Client,
     interaction: CommandInteraction
-  ): Promise<InteractionResponse<boolean>>;
+  ): Promise<InteractionResponse<boolean> | null> | null;
 }
 
 export abstract class Subcommand {
